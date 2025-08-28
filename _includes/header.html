@@ -1,0 +1,165 @@
+<header class="site-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="site-branding">
+                <a href="{{ '/' | relative_url }}" class="site-logo">
+                    <span class="logo-text">{{ site.researcher.name | split: ' ' | first }}</span>
+                </a>
+            </div>
+            
+            <nav class="navigation" id="navigation">
+                <ul class="nav-menu">
+                    {% for item in site.navigation %}
+                        <li class="nav-item">
+                            <a href="{{ item.url | relative_url }}" 
+                               class="nav-link {% if page.url == item.url %}active{% endif %}">
+                                {{ item.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+            
+            <div class="header-actions">
+                <!-- Search Toggle -->
+                <button class="search-toggle" id="search-toggle" aria-label="Toggle search">
+                    <i data-feather="search"></i>
+                </button>
+                
+                <!-- Theme Toggle -->
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                    <i data-feather="moon"></i>
+                </button>
+                
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="search-overlay">
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" 
+                       id="search-input" 
+                       placeholder="Search publications..." 
+                       autocomplete="off">
+                <button class="search-close" id="search-close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="search-results" id="search-results"></div>
+        </div>
+    </div>
+</header>
+
+<script>
+// Header functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const navigation = document.getElementById('navigation');
+    
+    if (mobileMenuBtn && navigation) {
+        mobileMenuBtn.addEventListener('click', function() {
+            navigation.classList.toggle('active');
+            this.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        });
+    }
+    
+    // Search functionality
+    const searchToggle = document.getElementById('search-toggle');
+    const searchOverlay = document.getElementById('search-overlay');
+    const searchClose = document.getElementById('search-close');
+    const searchInput = document.getElementById('search-input');
+    
+    if (searchToggle && searchOverlay) {
+        searchToggle.addEventListener('click', function() {
+            searchOverlay.classList.add('active');
+            document.body.classList.add('search-open');
+            setTimeout(() => searchInput.focus(), 100);
+        });
+    }
+    
+    if (searchClose) {
+        searchClose.addEventListener('click', function() {
+            searchOverlay.classList.remove('active');
+            document.body.classList.remove('search-open');
+            searchInput.value = '';
+        });
+    }
+    
+    // Close search on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && searchOverlay.classList.contains('active')) {
+            searchOverlay.classList.remove('active');
+            document.body.classList.remove('search-open');
+            searchInput.value = '';
+        }
+    });
+    
+    // Theme toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    
+    // Set initial theme
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    
+    if (themeToggle) {
+        // Update icon based on current theme
+        const icon = themeToggle.querySelector('i');
+        if (currentTheme === 'dark') {
+            icon.setAttribute('data-feather', 'sun');
+        } else {
+            icon.setAttribute('data-feather', 'moon');
+        }
+        feather.replace();
+        
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update icon
+            const icon = this.querySelector('i');
+            if (newTheme === 'dark') {
+                icon.setAttribute('data-feather', 'sun');
+            } else {
+                icon.setAttribute('data-feather', 'moon');
+            }
+            feather.replace();
+        });
+    }
+    
+    // Sticky header on scroll
+    let lastScrollTop = 0;
+    const header = document.querySelector('.site-header');
+    
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > 100) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+        
+        // Hide header on scroll down, show on scroll up
+        if (scrollTop > lastScrollTop && scrollTop > 200) {
+            header.classList.add('hidden');
+        } else {
+            header.classList.remove('hidden');
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+});
+</script>

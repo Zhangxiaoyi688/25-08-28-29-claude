@@ -1,0 +1,108 @@
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section footer-about">
+                <h3 class="footer-title">{{ site.researcher.name }}</h3>
+                <p class="footer-description">{{ site.researcher.title }} at {{ site.researcher.institution }}</p>
+                <p class="footer-bio">{{ site.researcher.bio | truncate: 120 }}</p>
+                
+                <div class="footer-social">
+                    {% for link in site.researcher.social_links %}
+                        <a href="{{ link.url }}" target="_blank" rel="noopener" class="social-link" title="{{ link.name }}">
+                            <i data-feather="{{ link.icon }}"></i>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="footer-section footer-links">
+                <h3 class="footer-title">Quick Links</h3>
+                <ul class="footer-nav">
+                    {% for item in site.navigation %}
+                        <li><a href="{{ item.url | relative_url }}">{{ item.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="footer-section footer-research">
+                <h3 class="footer-title">Research Areas</h3>
+                <ul class="research-areas">
+                    <li>Deep Learning</li>
+                    <li>Natural Language Processing</li>
+                    <li>Computer Vision</li>
+                    <li>Machine Learning</li>
+                </ul>
+            </div>
+            
+            <div class="footer-section footer-contact">
+                <h3 class="footer-title">Contact</h3>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i data-feather="mail"></i>
+                        <a href="mailto:{{ site.researcher.email }}">{{ site.researcher.email }}</a>
+                    </div>
+                    <div class="contact-item">
+                        <i data-feather="map-pin"></i>
+                        <span>{{ site.researcher.institution }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-bottom-content">
+                <div class="copyright">
+                    <p>&copy; {{ 'now' | date: "%Y" }} {{ site.researcher.name }}. All rights reserved.</p>
+                </div>
+                
+                <div class="footer-meta">
+                    <span>Built with <a href="https://jekyllrb.com/" target="_blank" rel="noopener">Jekyll</a></span>
+                    <span>•</span>
+                    <span>Hosted on <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a></span>
+                </div>
+                
+                <div class="back-to-top">
+                    <button id="back-to-top" class="back-to-top-btn" aria-label="Back to top">
+                        <i data-feather="chevron-up"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Footer functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Back to top button
+    const backToTopBtn = document.getElementById('back-to-top');
+    
+    if (backToTopBtn) {
+        // Show/hide back to top button based on scroll position
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        // Smooth scroll to top
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+    
+    // Add current year to copyright if not already set
+    const copyrightYear = document.querySelector('.copyright p');
+    if (copyrightYear && !copyrightYear.textContent.includes(new Date().getFullYear())) {
+        copyrightYear.textContent = copyrightYear.textContent.replace(
+            /©\s*\d{4}/, 
+            `© ${new Date().getFullYear()}`
+        );
+    }
+});
+</script>

@@ -1,0 +1,156 @@
+---
+layout: default
+---
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-background">
+        <div class="hero-overlay"></div>
+    </div>
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="typing-text">{{ site.researcher.name }}</span>
+                </h1>
+                <p class="hero-subtitle">{{ site.researcher.title }}</p>
+                <p class="hero-institution">{{ site.researcher.institution }}</p>
+                <p class="hero-bio">{{ site.researcher.bio }}</p>
+                
+                <div class="hero-actions">
+                    <a href="#publications" class="btn btn-primary">View Publications</a>
+                    <a href="/about/" class="btn btn-secondary">About Me</a>
+                </div>
+                
+                <div class="social-links">
+                    {% for link in site.researcher.social_links %}
+                        <a href="{{ link.url }}" target="_blank" rel="noopener" class="social-link" title="{{ link.name }}">
+                            <i data-feather="{{ link.icon }}"></i>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="hero-image">
+                <div class="profile-image-container">
+                    <img src="{{ site.researcher.profile_image | relative_url }}" alt="{{ site.researcher.name }}" class="profile-image">
+                    <div class="profile-image-border"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Publications Section -->
+<section id="publications" class="featured-publications">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Featured Publications</h2>
+            <p class="section-subtitle">Recent research contributions and academic work</p>
+        </div>
+        
+        <div class="publications-grid">
+            {% assign featured_papers = site.research | sort: 'date' | reverse | limit: 6 %}
+            {% for paper in featured_papers %}
+                <article class="publication-card">
+                    <div class="publication-header">
+                        <div class="publication-type">
+                            {% assign paper_type = site.research_types | where: 'type', paper.type | first %}
+                            <span class="type-badge" style="background-color: {{ paper_type.color }}">
+                                {{ paper_type.name | default: paper.type | capitalize }}
+                            </span>
+                        </div>
+                        <div class="publication-date">{{ paper.date | date: "%Y" }}</div>
+                    </div>
+                    
+                    <h3 class="publication-title">
+                        <a href="{{ paper.url | relative_url }}">{{ paper.title }}</a>
+                    </h3>
+                    
+                    <div class="publication-authors">
+                        {% if paper.authors %}
+                            {{ paper.authors | join: ", " }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="publication-venue">
+                        {% if paper.venue %}
+                            <i data-feather="map-pin"></i>
+                            {{ paper.venue }}
+                        {% endif %}
+                    </div>
+                    
+                    {% if paper.abstract %}
+                        <p class="publication-abstract">{{ paper.abstract | truncate: 150 }}</p>
+                    {% endif %}
+                    
+                    <div class="publication-actions">
+                        <a href="{{ paper.url | relative_url }}" class="btn btn-sm btn-primary">Read More</a>
+                        {% if paper.pdf_url %}
+                            <a href="{{ paper.pdf_url | relative_url }}" class="btn btn-sm btn-outline" target="_blank">
+                                <i data-feather="download"></i> PDF
+                            </a>
+                        {% endif %}
+                    </div>
+                    
+                    {% if paper.tags %}
+                        <div class="publication-tags">
+                            {% for tag in paper.tags limit: 3 %}
+                                <span class="tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </article>
+            {% endfor %}
+        </div>
+        
+        <div class="section-footer">
+            <a href="/publications/" class="btn btn-lg btn-primary">View All Publications</a>
+        </div>
+    </div>
+</section>
+
+<!-- Research Interests Section -->
+<section class="research-interests">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Research Interests</h2>
+        </div>
+        
+        <div class="interests-grid">
+            <div class="interest-item">
+                <div class="interest-icon">
+                    <i data-feather="cpu"></i>
+                </div>
+                <h3>Deep Learning</h3>
+                <p>Neural network architectures, optimization techniques, and applications in various domains.</p>
+            </div>
+            
+            <div class="interest-item">
+                <div class="interest-icon">
+                    <i data-feather="message-circle"></i>
+                </div>
+                <h3>Natural Language Processing</h3>
+                <p>Language understanding, generation, and transformer-based models for text analysis.</p>
+            </div>
+            
+            <div class="interest-item">
+                <div class="interest-icon">
+                    <i data-feather="eye"></i>
+                </div>
+                <h3>Computer Vision</h3>
+                <p>Image recognition, object detection, and multimodal learning systems.</p>
+            </div>
+            
+            <div class="interest-item">
+                <div class="interest-icon">
+                    <i data-feather="trending-up"></i>
+                </div>
+                <h3>Machine Learning</h3>
+                <p>Statistical learning theory, reinforcement learning, and AI safety research.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{ content }}

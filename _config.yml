@@ -1,0 +1,103 @@
+# Site settings
+title: "Dr. John Doe - Research Portfolio"
+description: "Academic research in machine learning and natural language processing"
+url: "https://username.github.io"
+baseurl: ""
+
+# Researcher information
+researcher:
+  name: "Dr. John Doe"
+  title: "Assistant Professor"
+  institution: "University of Technology"
+  email: "john.doe@university.edu"
+  bio: "Researcher specializing in deep learning and NLP with focus on transformer architectures and their applications in natural language understanding."
+  profile_image: "/assets/images/profile.jpg"
+  social_links:
+    - name: "Google Scholar"
+      url: "https://scholar.google.com/citations?user=example"
+      icon: "graduation-cap"
+    - name: "GitHub"
+      url: "https://github.com/username"
+      icon: "github"
+    - name: "LinkedIn"
+      url: "https://linkedin.com/in/username"
+      icon: "linkedin"
+    - name: "ORCID"
+      url: "https://orcid.org/0000-0000-0000-0000"
+      icon: "user"
+
+# Collections
+collections:
+  research:
+    output: true
+    permalink: /research/:slug/
+    sort_by: date
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-paginate
+
+# Exclude files from processing
+exclude:
+  - vendor/
+  - .bundle/
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+
+# Pagination
+paginate: 10
+paginate_path: "/publications/page:num/"
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - README.md
+  - .gitignore
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "research"
+    values:
+      layout: "research"
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+
+# Site navigation
+navigation:
+  - name: "Home"
+    url: "/"
+  - name: "Publications"
+    url: "/publications/"
+  - name: "About"
+    url: "/about/"
+
+# Research categories
+research_types:
+  - name: "Conference Papers"
+    type: "conference"
+    color: "#3b82f6"
+  - name: "Journal Articles"
+    type: "journal"
+    color: "#10b981"
+  - name: "Preprints"
+    type: "preprint"
+    color: "#f59e0b"
+  - name: "Workshop Papers"
+    type: "workshop"
+    color: "#8b5cf6"

@@ -1,0 +1,174 @@
+---
+layout: default
+---
+
+<article class="research-paper">
+    <div class="paper-header">
+        <div class="container">
+            <div class="paper-header-content">
+                <div class="paper-meta">
+                    {% assign paper_type = site.research_types | where: 'type', page.type | first %}
+                    <span class="type-badge" style="background-color: {{ paper_type.color }}">
+                        {{ paper_type.name | default: page.type | capitalize }}
+                    </span>
+                    <span class="paper-date">{{ page.date | date: "%B %Y" }}</span>
+                </div>
+                
+                <h1 class="paper-title">{{ page.title }}</h1>
+                
+                {% if page.authors %}
+                    <div class="paper-authors">
+                        <i data-feather="users"></i>
+                        <span>{{ page.authors | join: ", " }}</span>
+                    </div>
+                {% endif %}
+                
+                {% if page.venue %}
+                    <div class="paper-venue">
+                        <i data-feather="map-pin"></i>
+                        <span>{{ page.venue }}</span>
+                    </div>
+                {% endif %}
+                
+                <div class="paper-actions">
+                    {% if page.pdf_url %}
+                        <a href="{{ page.pdf_url | relative_url }}" class="btn btn-primary" target="_blank">
+                            <i data-feather="download"></i> Download PDF
+                        </a>
+                    {% endif %}
+                    
+                    {% if page.external_url %}
+                        <a href="{{ page.external_url }}" class="btn btn-secondary" target="_blank">
+                            <i data-feather="external-link"></i> Publisher
+                        </a>
+                    {% endif %}
+                    
+                    <button class="btn btn-outline" onclick="copyBibTeX()">
+                        <i data-feather="copy"></i> BibTeX
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="paper-content">
+        <div class="container">
+            <div class="paper-layout">
+                <div class="paper-main">
+                    {% if page.abstract %}
+                        <section class="paper-section">
+                            <h2>Abstract</h2>
+                            <div class="abstract">
+                                {{ page.abstract | markdownify }}
+                            </div>
+                        </section>
+                    {% endif %}
+                    
+                    <section class="paper-section">
+                        <div class="paper-body">
+                            {{ content }}
+                        </div>
+                    </section>
+                </div>
+                
+                <aside class="paper-sidebar">
+                    <div class="sidebar-section">
+                        <h3>Paper Information</h3>
+                        <dl class="paper-details">
+                            {% if page.date %}
+                                <dt>Published</dt>
+                                <dd>{{ page.date | date: "%B %d, %Y" }}</dd>
+                            {% endif %}
+                            
+                            {% if page.type %}
+                                <dt>Type</dt>
+                                <dd>{{ paper_type.name | default: page.type | capitalize }}</dd>
+                            {% endif %}
+                            
+                            {% if page.venue %}
+                                <dt>Venue</dt>
+                                <dd>{{ page.venue }}</dd>
+                            {% endif %}
+                            
+                            {% if page.doi %}
+                                <dt>DOI</dt>
+                                <dd><a href="https://doi.org/{{ page.doi }}" target="_blank">{{ page.doi }}</a></dd>
+                            {% endif %}
+                        </dl>
+                    </div>
+                    
+                    {% if page.tags %}
+                        <div class="sidebar-section">
+                            <h3>Tags</h3>
+                            <div class="tags-list">
+                                {% for tag in page.tags %}
+                                    <span class="tag">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="sidebar-section">
+                        <h3>Citation</h3>
+                        <div class="citation-box">
+                            <pre id="bibtex-citation">@{{ page.type | default: 'article' }}{{"{" }}{{ page.title | slugify }},
+  title={{"{" }}{{ page.title }}{"}" }},
+  author={{"{" }}{{ page.authors | join: " and " }}{"}" }},
+  {% if page.venue %}venue={{"{" }}{{ page.venue }}{"}" }},{% endif %}
+  year={{"{" }}{{ page.date | date: "%Y" }}{"}" }}
+}</pre>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</article>
+
+<!-- Related Papers Section -->
+{% assign related_papers = site.research | where_exp: "paper", "paper.url != page.url" | sample: 3 %}
+{% if related_papers.size > 0 %}
+<section class="related-papers">
+    <div class="container">
+        <h2 class="section-title">Related Papers</h2>
+        <div class="related-papers-grid">
+            {% for paper in related_papers %}
+                <article class="related-paper-card">
+                    <h3 class="related-paper-title">
+                        <a href="{{ paper.url | relative_url }}">{{ paper.title }}</a>
+                    </h3>
+                    <div class="related-paper-meta">
+                        <span class="related-paper-date">{{ paper.date | date: "%Y" }}</span>
+                        {% if paper.venue %}
+                            <span class="related-paper-venue">{{ paper.venue }}</span>
+                        {% endif %}
+                    </div>
+                    {% if paper.abstract %}
+                        <p class="related-paper-abstract">{{ paper.abstract | truncate: 100 }}</p>
+                    {% endif %}
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<script>
+function copyBibTeX() {
+    const citation = document.getElementById('bibtex-citation').textContent;
+    navigator.clipboard.writeText(citation).then(function() {
+        // Show success message
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i data-feather="check"></i> Copied!';
+        feather.replace();
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            feather.replace();
+        }, 2000);
+    }).catch(function(err) {
+        console.error('Could not copy text: ', err);
+    });
+}
+</script>
